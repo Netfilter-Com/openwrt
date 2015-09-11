@@ -30,8 +30,17 @@ brcm63xx_dt_detect() {
 	"Broadcom 96348R reference board")
 		board_name="bcm96348r"
 		;;
+	"Broadcom BCM96318REF reference board")
+		board_name="bcm96318ref"
+		;;
+	"Broadcom BCM96318REF_P300 reference board")
+		board_name="bcm96318ref_p300"
+		;;
 	"Broadcom BCM963268BU_P300 reference board")
 		board_name="bcm963268bu_p300"
+		;;
+	"Broadcom BCM963269BHR reference board")
+		board_name="bcm963269bhr"
 		;;
 	"Broadcom bcm963281TAN reference board")
 		board_name="bcm963281tan"
@@ -66,6 +75,9 @@ brcm63xx_dt_detect() {
 	"BT Home Hub 2.0 Type A")
 		board_name="homehub2a"
 		;;
+	"BT Voyager 2110")
+		board_name="v2110"
+		;;
 	"BT Voyager V2500V")
 		board_name="v2500v_bb"
 		;;
@@ -90,6 +102,9 @@ brcm63xx_dt_detect() {
 	"Comtrend VR-3025un")
 		board_name="vr-3025un"
 		;;
+	"Comtrend VR-3026e")
+		board_name="vr-3026e"
+		;;
 	"Comtrend WAP-5813n")
 		board_name="wap-5813n"
 		;;
@@ -110,6 +125,9 @@ brcm63xx_dt_detect() {
 		;;
 	"D-Link DSL-2740B/DSL-2741B rev F1")
 		board_name="dsl-274xb-f"
+		;;
+	"D-Link DSL-2750B/DSL-2751 rev D1")
+		board_name="dsl-275xb-d"
 		;;
 	"D-Link DVA-G3810BN/TL")
 		board_name="dva-g3810bn"
@@ -140,6 +158,12 @@ brcm63xx_dt_detect() {
 		;;
 	"Huawei EchoLife HG556a (version C)")
 		board_name="hg556a_c"
+		;;
+	"Huawei HG655b")
+		board_name="hg655b"
+		;;
+	"Inteno VG50")
+		board_name="vg50"
 		;;
 	"Inventel Livebox 1")
 		board_name="livebox1"
@@ -176,6 +200,9 @@ brcm63xx_dt_detect() {
 		;;
 	"Sagem F@ST2604")
 		board_name="fast2604"
+		;;
+	"Sagem F@ST2704N")
+		board_name="fast2704n"
 		;;
 	"Sagem F@ST2704V2")
 		board_name="fast2704v2"
@@ -228,12 +255,6 @@ brcm63xx_legacy_detect() {
 	local board_name
 
 	case "$1" in
-	V2110)
-		board_name="v2110"
-		;;
-	VW6339GU)
-		board_namge="vg50"
-		;;
 	*)
 		board_name="unknown"
 		;;

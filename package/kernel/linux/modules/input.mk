@@ -11,7 +11,7 @@ define KernelPackage/hid
   SUBMENU:=$(INPUT_MODULES_MENU)
   TITLE:=HID Devices
   DEPENDS:=+kmod-input-core +kmod-input-evdev
-  KCONFIG:=CONFIG_HID CONFIG_HIDRAW=y
+  KCONFIG:=CONFIG_HID CONFIG_HIDRAW=y CONFIG_HID_BATTERY_STRENGTH=y
   FILES:=$(LINUX_DIR)/drivers/hid/hid.ko
   AUTOLOAD:=$(call AutoLoad,61,hid)
 endef
@@ -176,7 +176,7 @@ $(eval $(call KernelPackage,input-matrixkmap))
 define KernelPackage/acpi-button
   SUBMENU:=$(INPUT_MODULES_MENU)
   TITLE:=ACPI Button Support
-  DEPENDS:=@(TARGET_x86_generic||TARGET_x86_kvm_guest||TARGET_x86_xen_domu) +kmod-input-evdev
+  DEPENDS:=@(TARGET_x86_generic||TARGET_x86_kvm_guest||TARGET_x86_xen_domu||TARGET_x86_64) +kmod-input-evdev
   KCONFIG:=CONFIG_ACPI_BUTTON
   FILES:=$(LINUX_DIR)/drivers/acpi/button.ko
   AUTOLOAD:=$(call AutoLoad,06,button)
@@ -205,3 +205,21 @@ define KernelPackage/keyboard-imx/description
 endef
 
 $(eval $(call KernelPackage,keyboard-imx))
+
+
+define KernelPackage/input-uinput
+  SUBMENU:=$(INPUT_MODULES_MENU)
+  TITLE:=user input module
+  DEPENDS:=+kmod-input-core
+  KCONFIG:= \
+	CONFIG_INPUT_MISC=y \
+	CONFIG_INPUT_UINPUT
+  FILES:=$(LINUX_DIR)/drivers/input/misc/uinput.ko
+  AUTOLOAD:=$(call AutoProbe,uinput)
+endef
+
+define KernelPackage/input-uinput/description
+  user input modules needed for bluez
+endef
+
+$(eval $(call KernelPackage,input-uinput))

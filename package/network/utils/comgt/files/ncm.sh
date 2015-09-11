@@ -27,6 +27,8 @@ proto_ncm_setup() {
 	local device apn auth username password pincode delay mode
 	json_get_vars device apn auth username password pincode delay mode
 
+	[ -n "$ctl_device" ] && device=$ctl_device
+
 	[ -n "$device" ] || {
 		echo "No control device specified"
 		proto_notify_error "$interface" NO_DEVICE
@@ -120,15 +122,16 @@ proto_ncm_setup() {
 	proto_send_update "$interface"
 
 	json_init
-	json_add_string name "${interface}_dhcp"
+	json_add_string name "${interface}_4"
 	json_add_string ifname "@$interface"
 	json_add_string proto "dhcp"
 	ubus call network add_dynamic "$(json_dump)"
 
 	json_init
-	json_add_string name "${interface}_dhcpv6"
+	json_add_string name "${interface}_6"
 	json_add_string ifname "@$interface"
 	json_add_string proto "dhcpv6"
+	json_add_string extendprefix 1
 	ubus call network add_dynamic "$(json_dump)"
 }
 

@@ -8,14 +8,14 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=procd
-PKG_VERSION:=2015-03-27
+PKG_VERSION:=2015-08-16
 
 PKG_RELEASE=$(PKG_SOURCE_VERSION)
 
 PKG_SOURCE_PROTO:=git
 PKG_SOURCE_URL:=git://nbd.name/luci2/procd.git
 PKG_SOURCE_SUBDIR:=$(PKG_NAME)-$(PKG_VERSION)
-PKG_SOURCE_VERSION:=74d835463e05e5761f6f5271e487f299f29d3f07
+PKG_SOURCE_VERSION:=0da5bf2ff222d1a499172a6e09507388676b5a08
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION)-$(PKG_SOURCE_VERSION).tar.gz
 CMAKE_INSTALL:=1
 
@@ -77,12 +77,12 @@ config PROCD_ZRAM_TMPFS
 config PROCD_JAIL_SUPPORT
 	bool
 	default y
-	depends on (mips || mipsel || i386 || x86_64) && PROCD_SECCOMP_SUPPORT
+	depends on (arm || armeb || mips || mipsel || i386 || x86_64) && PROCD_SECCOMP_SUPPORT
 
 config PROCD_SECCOMP_SUPPORT
 	bool
 	default y
-	depends on (mips || mipsel || i386 || x86_64) && !TARGET_uml && @KERNEL_SECCOMP
+	depends on (arm || armeb || mips || mipsel || i386 || x86_64) && !TARGET_uml && @KERNEL_SECCOMP
 endmenu
 endef
 
@@ -111,6 +111,7 @@ define Package/procd/install
 	$(INSTALL_DIR) $(1)/sbin $(1)/etc $(1)/lib/functions
 
 	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/sbin/{init,procd,askfirst,udevtrigger} $(1)/sbin/
+	$(INSTALL_DATA) $(PKG_INSTALL_DIR)/usr/lib/libsetlbf.so $(1)/lib
 	$(INSTALL_BIN) ./files/reload_config $(1)/sbin/
 	$(INSTALL_DATA) ./files/hotplug*.json $(1)/etc/
 	$(INSTALL_DATA) ./files/procd.sh $(1)/lib/functions/

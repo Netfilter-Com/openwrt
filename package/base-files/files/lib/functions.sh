@@ -154,15 +154,18 @@ config_list_foreach() {
 }
 
 insert_modules() {
-	[ -d /etc/modules.d ] && {
-		cd /etc/modules.d
-		sed 's/^[^#]/insmod &/' $* | ash 2>&- || :
-	}
+	for m in $*; do
+		if [ -f /etc/modules.d/$m ]; then
+			sed 's/^[^#]/insmod &/' /etc/modules.d/$m | ash 2>&- || :
+		else
+			modprobe $m
+		fi
+	done
 }
 
 default_prerm() {
 	local name
-	name=$(echo $(basename $1) | cut -d. -f1)
+	name=$(basename ${1%.*})
 	[ -f /usr/lib/opkg/info/${name}.prerm-pkg ] && . /usr/lib/opkg/info/${name}.prerm-pkg
 	for i in `cat /usr/lib/opkg/info/${name}.list | grep "^/etc/init.d/"`; do
 		$i disable
@@ -171,8 +174,9 @@ default_prerm() {
 }
 
 default_postinst() {
-	local pkgname rusers
-	pkgname=$(echo $(basename $1) | cut -d. -f1)
+	local pkgname rusers ret
+	ret=0
+	pkgname=$(basename ${1%.*})
 	rusers=$(grep "Require-User:" ${IPKG_INSTROOT}/usr/lib/opkg/info/${pkgname}.control)
 	[ -n "$rusers" ] && {
 		local user group uid gid
@@ -212,7 +216,10 @@ default_postinst() {
 		done
 	}
 
-	[ -f ${IPKG_INSTROOT}/usr/lib/opkg/info/${pkgname}.postinst-pkg ] && ( . ${IPKG_INSTROOT}/usr/lib/opkg/info/${pkgname}.postinst-pkg )
+	if [ -f ${IPKG_INSTROOT}/usr/lib/opkg/info/${pkgname}.postinst-pkg ]; then
+		( . ${IPKG_INSTROOT}/usr/lib/opkg/info/${pkgname}.postinst-pkg )
+		ret=$?
+	fi
 	[ -n "${IPKG_INSTROOT}" ] || rm -f /tmp/luci-indexcache 2>/dev/null
 
 	[ "$PKG_UPGRADE" = "1" ] || for i in `cat ${IPKG_INSTROOT}/usr/lib/opkg/info/${pkgname}.list | grep "^/etc/init.d/"`; do
@@ -222,7 +229,7 @@ default_postinst() {
 			$i start
 		}
 	done
-	return 0
+	return $ret
 }
 
 include() {
